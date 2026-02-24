@@ -71,12 +71,12 @@ The skill auto-runs setup on first use, or you can trigger it manually:
 /videodb:python setup the virtual environment
 ```
 
-This runs `python/scripts/setup_venv.py` which creates a `.venv/` and installs all dependencies from `python/requirements.txt`.
+This runs `python/scripts/setup_venv.py` which creates `python/.venv/` and installs all dependencies from `python/requirements.txt`.
 
 ### 3. Verify the setup
 
 ```bash
-.venv/bin/python python/scripts/check_connection.py
+python/.venv/bin/python python/scripts/check_connection.py
 ```
 
 This confirms your API key is valid and the SDK can connect to VideoDB.
@@ -146,7 +146,7 @@ Ask Claude to write Python scripts for your video tasks:
 Claude will generate standalone Python scripts you can run locally with:
 
 ```bash
-.venv/bin/python your_script.py
+python/.venv/bin/python your_script.py
 ```
 
 ---
@@ -266,10 +266,10 @@ The plugin includes a ready-to-run capture setup powered by the [VideoDB Capture
 
 ```bash
 # Terminal 1: start the backend
-.venv/bin/python python/scripts/backend.py
+python/.venv/bin/python python/scripts/backend.py
 
 # Terminal 2: start the client
-.venv/bin/python python/scripts/client.py
+python/.venv/bin/python python/scripts/client.py
 ```
 
 The backend automatically creates a Cloudflare tunnel for the webhook URL. The client requests device permissions, discovers channels, and begins streaming. Press Enter in the client terminal to stop recording.
@@ -284,19 +284,19 @@ Run these from the plugin root directory:
 
 ```bash
 # Upload multiple files from a URL list
-.venv/bin/python python/scripts/batch_upload.py --urls urls.txt --collection "My Project"
+python/.venv/bin/python python/scripts/batch_upload.py --urls urls.txt --collection "My Project"
 
 # Search inside a video and compile results
-.venv/bin/python python/scripts/search_and_compile.py --video-id VIDEO_ID --query "product demo"
+python/.venv/bin/python python/scripts/search_and_compile.py --video-id VIDEO_ID --query "product demo"
 
 # Extract clips by timestamp ranges
-.venv/bin/python python/scripts/extract_clips.py --video-id VIDEO_ID --timestamps "10.0-25.0,45.0-60.0"
+python/.venv/bin/python python/scripts/extract_clips.py --video-id VIDEO_ID --timestamps "10.0-25.0,45.0-60.0"
 
 # Start the capture backend (Flask + Cloudflare tunnel)
-.venv/bin/python python/scripts/backend.py
+python/.venv/bin/python python/scripts/backend.py
 
 # Start the capture client (screen + audio recording)
-.venv/bin/python python/scripts/client.py
+python/.venv/bin/python python/scripts/client.py
 ```
 
 ---

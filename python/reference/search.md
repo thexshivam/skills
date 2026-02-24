@@ -57,6 +57,7 @@ except Exception as e:
 |------|-------------|----------|
 | `SceneExtractionType.shot_based` | Splits on visual shot boundaries | General purpose, action content |
 | `SceneExtractionType.time_based` | Splits at fixed intervals | Uniform sampling, long static content |
+| `SceneExtractionType.transcript` | Splits based on transcript segments | Speech-driven scene boundaries |
 
 **Parameters for `time_based`:**
 

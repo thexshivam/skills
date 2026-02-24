@@ -24,6 +24,7 @@ conn = videodb.connect(
 | `conn.check_usage()` | `dict` | Get account usage stats |
 | `conn.upload(source, media_type, name, ...)` | `Video\|Audio\|Image` | Upload to default collection |
 | `conn.record_meeting(meeting_url, bot_name, ...)` | `Meeting` | Record a meeting |
+| `conn.create_capture_session(end_user_id, collection_id, ...)` | `CaptureSession` | Create a capture session |
 | `conn.youtube_search(query, result_threshold, duration)` | `list[dict]` | Search YouTube |
 | `conn.transcode(source, callback_url, mode, ...)` | `str` | Transcode video (returns job ID) |
 | `conn.get_transcode_details(job_id)` | `dict` | Get transcode job status and details |
@@ -112,15 +113,17 @@ coll = conn.get_collection()
 | `coll.get_images()` | `list[Image]` | List all images |
 | `coll.get_image(image_id)` | `Image` | Get specific image |
 | `coll.upload(url=None, file_path=None, media_type=None, name=None)` | `Video\|Audio\|Image` | Upload media |
-| `coll.search(query, search_type, index_type=IndexType.spoken_word)` | `SearchResult` | Search across collection (semantic only; keyword and scene search raise `NotImplementedError`) |
+| `coll.search(query, search_type, index_type, score_threshold, namespace, scene_index_id, ...)` | `SearchResult` | Search across collection (semantic only; keyword and scene search raise `NotImplementedError`) |
 | `coll.generate_image(prompt, aspect_ratio="1:1")` | `Image` | Generate image with AI |
 | `coll.generate_video(prompt, duration=5)` | `Video` | Generate video with AI |
 | `coll.generate_music(prompt, duration=5)` | `Audio` | Generate music with AI |
 | `coll.generate_sound_effect(prompt, duration=2)` | `Audio` | Generate sound effect |
 | `coll.generate_voice(text, voice_name="Default")` | `Audio` | Generate speech from text |
-| `coll.generate_text(prompt, model_name="basic")` | `dict` | LLM text generation — access result via `["output"]` |
+| `coll.generate_text(prompt, model_name="basic", response_type="text")` | `dict` | LLM text generation — access result via `["output"]` |
 | `coll.dub_video(video_id, language_code)` | `Video` | Dub video into another language |
 | `coll.record_meeting(meeting_url, bot_name, ...)` | `Meeting` | Record a live meeting |
+| `coll.create_capture_session(end_user_id, callback_url, ...)` | `CaptureSession` | Create a capture session |
+| `coll.get_capture_session(capture_session_id)` | `CaptureSession` | Retrieve an existing capture session |
 | `coll.connect_rtstream(url, name, ...)` | `RTStream` | Connect to a live stream |
 | `coll.make_public()` | `None` | Make collection public |
 | `coll.make_private()` | `None` | Make collection private |
@@ -168,20 +171,20 @@ video = coll.get_video(video_id)
 | `video.generate_stream(timeline=None)` | `str` | Generate stream URL (optional timeline of `[(start, end)]` tuples) |
 | `video.play()` | `str` | Open stream in browser, returns player URL |
 | `video.index_spoken_words(language_code=None, force=False)` | `None` | Index speech for search. Use `force=True` to skip if already indexed. |
-| `video.index_scenes(extraction_type, prompt, extraction_config={})` | `str` | Index visual scenes (returns scene_index_id) |
+| `video.index_scenes(extraction_type, prompt, extraction_config, metadata, model_name, name, scenes, callback_url)` | `str` | Index visual scenes (returns scene_index_id) |
 | `video.index_visuals(prompt, batch_config, ...)` | `str` | Index visuals (returns scene_index_id) |
 | `video.index_audio(prompt, model_name, ...)` | `str` | Index audio with LLM (returns scene_index_id) |
 | `video.get_transcript(start=None, end=None)` | `list[dict]` | Get timestamped transcript |
 | `video.get_transcript_text(start=None, end=None)` | `str` | Get full transcript text |
 | `video.generate_transcript(force=None)` | `dict` | Generate transcript |
 | `video.translate_transcript(language, additional_notes)` | `list[dict]` | Translate transcript |
-| `video.search(query, search_type, index_type, scene_index_id, filter, ...)` | `SearchResult` | Search within video |
+| `video.search(query, search_type, index_type, filter, **kwargs)` | `SearchResult` | Search within video |
 | `video.add_subtitle(style=SubtitleStyle())` | `str` | Add subtitles (returns stream URL) |
 | `video.generate_thumbnail(time=None)` | `str\|Image` | Generate thumbnail |
 | `video.get_thumbnails()` | `list[Image]` | Get all thumbnails |
 | `video.extract_scenes(extraction_type, extraction_config)` | `SceneCollection` | Extract scenes |
 | `video.reframe(start, end, target, mode, callback_url)` | `Video\|None` | Reframe video aspect ratio |
-| `video.clip(prompt, content_type, model_name)` | `SearchResult` | Generate clip from prompt |
+| `video.clip(prompt, content_type, model_name)` | `str` | Generate clip from prompt (returns stream URL) |
 | `video.insert_video(video, timestamp)` | `str` | Insert video at timestamp |
 | `video.download(name=None)` | `dict` | Download the video |
 | `video.delete()` | `None` | Delete the video |
@@ -412,7 +415,13 @@ results = video.search("query", search_type=SearchType.semantic)
 ## Meeting Object
 
 ```python
-meeting = coll.record_meeting(meeting_url="https://meet.google.com/...", bot_name="Bot")
+meeting = coll.record_meeting(
+    meeting_url="https://meet.google.com/...",
+    bot_name="Bot",
+    callback_url=None,          # Webhook URL for status updates
+    callback_data=None,         # Optional dict passed through to callbacks
+    time_zone="UTC",            # Time zone for the meeting
+)
 ```
 
 ### Meeting Properties
@@ -462,10 +471,11 @@ rtstream = coll.connect_rtstream(url="rtmp://...", name="My Stream")
 
 ```python
 session = conn.create_capture_session(
-    end_user_id="user-123",       # Identifier for the end user
-    collection_id="default",      # Target collection for the recording
-    callback_url="https://...",   # Webhook URL for session events
-    metadata={"app": "my-app"},   # Optional metadata dict
+    end_user_id="user-123",           # Identifier for the end user
+    collection_id="default",          # Target collection for the recording
+    callback_url="https://...",       # Webhook URL for session events
+    ws_connection_id=None,            # WebSocket connection ID for real-time events
+    metadata={"app": "my-app"},       # Optional metadata dict
 )
 # or
 session = conn.get_capture_session(capture_session_id)
@@ -475,7 +485,7 @@ session = conn.get_capture_session(capture_session_id)
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `conn.create_capture_session(end_user_id, collection_id, callback_url, metadata)` | `CaptureSession` | Create a new capture session |
+| `conn.create_capture_session(end_user_id, collection_id, callback_url, ws_connection_id, metadata)` | `CaptureSession` | Create a new capture session |
 | `conn.get_capture_session(capture_session_id)` | `CaptureSession` | Retrieve an existing capture session |
 | `conn.generate_client_token()` | `str` | Generate a client-side authentication token |
 
@@ -679,6 +689,7 @@ from videodb import SearchType
 SearchType.semantic    # Natural language semantic search
 SearchType.keyword     # Exact keyword matching
 SearchType.scene       # Visual scene search (may require paid plan)
+SearchType.llm         # LLM-powered search
 ```
 
 ### SceneExtractionType
@@ -688,6 +699,7 @@ from videodb import SceneExtractionType
 
 SceneExtractionType.shot_based   # Automatic shot boundary detection
 SceneExtractionType.time_based   # Fixed time interval extraction
+SceneExtractionType.transcript   # Transcript-based scene extraction
 ```
 
 ### SubtitleStyle
