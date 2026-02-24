@@ -56,37 +56,47 @@ git clone https://github.com/video-db/skills.git
 
 ## Quick Start
 
-### 1. Add your API key
+### 1. Get your VideoDB API key
+
+Sign up free at [console.videodb.io](https://console.videodb.io) (50 free uploads, no credit card required). Copy your API key from the dashboard.
+
+### 2. Add your API key
+
+Create a central config directory and add your API key:
 
 ```bash
-cp python/.env.example python/.env
+mkdir -p ~/.videodb
+echo "VIDEO_DB_API_KEY=" > ~/.videodb/.env
+nano ~/.videodb/.env
 ```
 
-Then edit `python/.env` and add your key:
+In the nano editor:
+- Type your API key after the `=` sign (e.g., `VIDEO_DB_API_KEY=vdb_your_key_here`)
+- Press `Ctrl + X`, then `Y`, then `Enter` to save
 
-```ini
-VIDEO_DB_API_KEY=your-api-key-here
-```
+> **Note:** This central location (`~/.videodb/.env`) works for both plugin installations and manual clones. You can also set the `VIDEO_DB_API_KEY` environment variable in your shell profile, or create a local `.env` file in the skill directory.
 
-### 2. Set up the Python environment
+### 3. Set up the Python environment
 
-The skill auto-runs setup on first use, or you can trigger it manually:
+In Claude Code, run:
 
 ```
 /videodb:python setup the virtual environment
 ```
 
-This runs `python/scripts/setup_venv.py` which creates `python/.venv/` and installs all dependencies from `python/requirements.txt`.
+This creates the virtual environment and installs all dependencies.
 
-### 3. Verify the setup
+### 4. Verify the connection
 
-```bash
-python/.venv/bin/python python/scripts/check_connection.py
+In Claude Code, run:
+
+```
+/videodb:python check the connection to VideoDB
 ```
 
 This confirms your API key is valid and the SDK can connect to VideoDB.
 
-### 4. Start using it
+### 5. Start using it
 
 ```
 /videodb:python upload https://www.youtube.com/watch?v=VIDEO_ID and give me a transcript
@@ -213,7 +223,8 @@ print(message.content[0].text)
 ```
 video-db/skills/
 ├── .claude-plugin/
-│   └── marketplace.json              # Claude Code plugin manifest
+│   ├── marketplace.json              # Marketplace listing metadata
+│   └── plugin.json                   # Plugin manifest
 ├── README.md
 └── python/
     ├── SKILL.md                      # Skill definition (loaded by Claude Code)
@@ -229,6 +240,7 @@ video-db/skills/
     │   ├── capture.md                # Real-time capture architecture guide
     │   └── use-cases.md              # End-to-end workflow examples
     └── scripts/
+        ├── env_loader.py             # Environment loader utility
         ├── setup_venv.py             # Virtual environment setup
         ├── setup.py                  # Dependency checker
         ├── check_connection.py       # API key verification

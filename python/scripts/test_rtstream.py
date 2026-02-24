@@ -13,12 +13,16 @@ import os
 import sys
 from pathlib import Path
 
-# Load .env
+# Load environment variables from multiple locations
 try:
-    from dotenv import load_dotenv
-    load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+    from env_loader import load_env
+    load_env()
 except ImportError:
-    pass
+    try:
+        from dotenv import load_dotenv
+        load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+    except ImportError:
+        pass
 
 def main() -> None:
     api_key = os.environ.get("VIDEO_DB_API_KEY", "")

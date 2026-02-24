@@ -25,10 +25,18 @@ import traceback
 from pathlib import Path
 from flask import Flask, request, jsonify
 from pycloudflared import try_cloudflare
-from dotenv import load_dotenv
 import videodb
 
-load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+# Load environment variables from multiple locations
+try:
+    from env_loader import load_env
+    load_env()
+except ImportError:
+    try:
+        from dotenv import load_dotenv
+        load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+    except ImportError:
+        pass
 
 app = Flask(__name__)
 

@@ -13,18 +13,17 @@ import os
 import sys
 from pathlib import Path
 
+# Load environment variables from multiple locations
 try:
-    from dotenv import load_dotenv
-    load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+    from env_loader import load_env
+    load_env()
 except ImportError:
-    # Fallback: manually parse .env if python-dotenv is not yet installed
-    _env_file = Path(__file__).resolve().parent.parent / ".env"
-    if _env_file.is_file():
-        for _line in _env_file.read_text().splitlines():
-            _line = _line.strip()
-            if _line and not _line.startswith("#") and "=" in _line:
-                _key, _, _val = _line.partition("=")
-                os.environ.setdefault(_key.strip(), _val.strip())
+    # Fallback if env_loader is not available
+    try:
+        from dotenv import load_dotenv
+        load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+    except ImportError:
+        pass
 
 
 def main() -> None:
