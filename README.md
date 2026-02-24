@@ -36,8 +36,13 @@ Talk to your videos using natural language. Upload, search, edit, generate subti
 
 ### Option 1: Claude Code Plugin (Recommended)
 
+**Step 1:** Add the marketplace (run this first and wait for it to complete):
 ```
 /plugin marketplace add video-db/skills
+```
+
+**Step 2:** Install the plugin (run this after step 1 succeeds):
+```
 /plugin install videodb@videodb-skills
 ```
 
