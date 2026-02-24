@@ -66,13 +66,10 @@ Create a central config directory and add your API key:
 
 ```bash
 mkdir -p ~/.videodb
-echo "VIDEO_DB_API_KEY=" > ~/.videodb/.env
-nano ~/.videodb/.env
+echo "VIDEO_DB_API_KEY={YOUR_API_KEY_HERE}" > ~/.videodb/.env
 ```
 
-In the nano editor:
-- Type your API key after the `=` sign (e.g., `VIDEO_DB_API_KEY=vdb_your_key_here`)
-- Press `Ctrl + X`, then `Y`, then `Enter` to save
+Replace `{YOUR_API_KEY_HERE}` with your actual VideoDB API key (e.g., `vdb_xxxxx...`).
 
 > **Note:** This central location (`~/.videodb/.env`) works for both plugin installations and manual clones. You can also set the `VIDEO_DB_API_KEY` environment variable in your shell profile, or create a local `.env` file in the skill directory.
 
@@ -161,7 +158,11 @@ Ask Claude to write Python scripts for your video tasks:
 Claude will generate standalone Python scripts you can run locally with:
 
 ```bash
+# If you have a venv setup (manual clone):
 python/.venv/bin/python your_script.py
+
+# Or use system Python:
+python3 your_script.py
 ```
 
 ---
@@ -281,6 +282,9 @@ The plugin includes a ready-to-run capture setup powered by the [VideoDB Capture
 
 ### Quick start
 
+> **Note:** For manual clone users. Plugin users should use `/videodb:python` commands in Claude Code instead.
+
+**Manual clone setup:**
 ```bash
 # Terminal 1: start the backend
 python/.venv/bin/python python/scripts/backend.py
@@ -297,7 +301,9 @@ See [capture.md](./python/reference/capture.md) for the full architecture guide,
 
 ## Utility Scripts
 
-Run these from the plugin root directory:
+> **Note:** These commands are for advanced users who manually cloned the repository. Most users should use Claude Code commands (e.g., `/videodb:python upload ...`) instead.
+
+**For manual clone users only** - Run these from the cloned repository directory:
 
 ```bash
 # Upload multiple files from a URL list
