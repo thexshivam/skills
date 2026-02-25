@@ -72,6 +72,13 @@ Run the virtual environment setup. The script path differs based on installation
 
 **For macOS/Linux:**
 ```bash
+# Validate CLAUDE_PLUGIN_ROOT is set
+if [ -z "${CLAUDE_PLUGIN_ROOT}" ]; then
+  echo "ERROR: CLAUDE_PLUGIN_ROOT environment variable is not set"
+  echo "This variable should be automatically set by Claude Code when loading the skill"
+  exit 1
+fi
+
 # Auto-detect installation type
 if [ -d "${CLAUDE_PLUGIN_ROOT}/python" ]; then
   # Claude Code plugin installation (files in python/ subdirectory)
@@ -84,6 +91,13 @@ fi
 
 **For Windows (PowerShell):**
 ```powershell
+# Validate CLAUDE_PLUGIN_ROOT is set
+if (-not $env:CLAUDE_PLUGIN_ROOT) {
+  Write-Error "ERROR: CLAUDE_PLUGIN_ROOT environment variable is not set"
+  Write-Error "This variable should be automatically set by Claude Code when loading the skill"
+  exit 1
+}
+
 # Auto-detect installation type
 if (Test-Path "$env:CLAUDE_PLUGIN_ROOT\python") {
   # Claude Code plugin installation
@@ -102,6 +116,12 @@ After setup completes, verify the connection using the venv's python:
 
 **For macOS/Linux:**
 ```bash
+# Validate CLAUDE_PLUGIN_ROOT is set
+if [ -z "${CLAUDE_PLUGIN_ROOT}" ]; then
+  echo "ERROR: CLAUDE_PLUGIN_ROOT environment variable is not set"
+  exit 1
+fi
+
 if [ -d "${CLAUDE_PLUGIN_ROOT}/python" ]; then
   # Plugin installation
   "${CLAUDE_PLUGIN_ROOT}/python/.venv/bin/python" "${CLAUDE_PLUGIN_ROOT}/python/scripts/check_connection.py"
@@ -113,6 +133,12 @@ fi
 
 **For Windows (PowerShell):**
 ```powershell
+# Validate CLAUDE_PLUGIN_ROOT is set
+if (-not $env:CLAUDE_PLUGIN_ROOT) {
+  Write-Error "ERROR: CLAUDE_PLUGIN_ROOT environment variable is not set"
+  exit 1
+}
+
 if (Test-Path "$env:CLAUDE_PLUGIN_ROOT\python") {
   # Plugin installation
   & "$env:CLAUDE_PLUGIN_ROOT\python\.venv\Scripts\python.exe" "$env:CLAUDE_PLUGIN_ROOT\python\scripts\check_connection.py"

@@ -30,23 +30,37 @@ Talk to your videos using natural language. Upload, search, edit, generate subti
 - **Claude Code** (for plugin usage) or any Claude interface
 - **VideoDB API key** — sign up free at [console.videodb.io](https://console.videodb.io) (50 free uploads, no credit card)
 
+**Supported Platforms:** macOS, Linux, Windows (PowerShell)
+
 ---
 
 ## Installation
 
 ### Option 1: Claude Code Plugin (Recommended)
 
-**Step 1:** Add the marketplace (run this first and wait for it to complete):
+**Step 1:** Open Claude Code and in the chat interface, type:
 ```
 /plugin marketplace add video-db/skills
 ```
+Wait for this to complete, then continue to Step 2.
 
-**Step 2:** Install the plugin (run this after step 1 succeeds):
+**Step 2:** In the Claude Code chat, type:
 ```
 /plugin install videodb@videodb-skills
 ```
 
-### Option 2: Manual Clone
+### Option 2: npx (Universal AI Agents)
+
+Install for multiple AI coding assistants (Claude Code, Cursor, Copilot, etc.):
+
+```bash
+# Recommended: run from your home directory
+cd ~ && npx skills add video-db/skills
+```
+
+This installs to `~/.agents/skills/videodb` (when run from home directory) and creates symlinks for supported agents.
+
+### Option 3: Manual Clone
 
 ```bash
 git clone https://github.com/video-db/skills.git
@@ -56,22 +70,32 @@ git clone https://github.com/video-db/skills.git
 
 ## Quick Start
 
-### 1. Set up the environment
+### 1. Get your VideoDB API key
 
-In Claude Code, run:
+Before setting up, sign up for a free account and get your API key:
+
+👉 **[Get your free API key at console.videodb.io](https://console.videodb.io)**
+
+(50 free uploads, no credit card required)
+
+Copy your API key - you'll need it in the next step.
+
+### 2. Set up the environment
+
+Open Claude Code and **in the chat interface**, type:
 
 ```
 /videodb setup the virtual environment
 ```
 
-Claude will:
-- Prompt you for your VideoDB API key if not already configured
-- Create the virtual environment and install dependencies
-- Verify the connection to VideoDB
+Claude will prompt you for your API key, then automatically:
+- Create the virtual environment
+- Install dependencies
+- Verify your connection to VideoDB
 
-> **Get your API key:** Sign up free at [console.videodb.io](https://console.videodb.io) (50 free uploads, no credit card required)
+> **Note:** The `/videodb` command is typed in Claude Code's chat interface, not in your terminal.
 
-### 2. Start using it
+### 3. Start using it
 
 ```
 /videodb upload https://www.youtube.com/watch?v=VIDEO_ID and give me a transcript
