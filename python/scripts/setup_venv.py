@@ -181,9 +181,7 @@ def check_api_key() -> bool:
         masked = key[:4] + "..." + key[-4:] if len(key) > 8 else "****"
         print(f"[setup_venv] API key found: {masked}")
         return True
-    print("[setup_venv] WARNING: VIDEO_DB_API_KEY is not set.")
-    print("  Set it with: export VIDEO_DB_API_KEY=\"your-api-key\"")
-    print("  Get a key from: https://console.videodb.io")
+    print("[setup_venv] Note: API key will be needed to use VideoDB.")
     return False
 
 

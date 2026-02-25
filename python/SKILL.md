@@ -25,11 +25,47 @@ Use this skill for VideoDB Python SDK workflows: upload, transcript, subtitle, s
 
 ## Setup
 
-Run setup from the plugin root using absolute paths so it works regardless of current directory:
+When the user asks to "setup the virtual environment" or similar, follow this workflow:
+
+### 1. Check for API Key
+
+First, check if the API key already exists:
+```bash
+test -f ~/.videodb/.env && grep -q VIDEO_DB_API_KEY ~/.videodb/.env
+```
+
+### 2. Prompt for API Key (if needed)
+
+If the API key is not found, use AskUserQuestion to get it from the user:
+
+```
+Question: "What is your VideoDB API key?"
+Description: "Get your free API key from https://console.videodb.io (50 free uploads, no credit card required)"
+```
+
+### 3. Store the API Key
+
+Once you have the API key, create the config directory and store it:
 
 ```bash
-python "${CLAUDE_PLUGIN_ROOT}/python/scripts/setup_venv.py"
-python "${CLAUDE_PLUGIN_ROOT}/python/scripts/check_connection.py"
+mkdir -p ~/.videodb
+echo "VIDEO_DB_API_KEY=<user-provided-key>" > ~/.videodb/.env
+```
+
+### 4. Run Setup Script
+
+Finally, run the virtual environment setup:
+
+```bash
+python3 "${CLAUDE_PLUGIN_ROOT}/python/scripts/setup_venv.py"
+```
+
+### 5. Verify Connection
+
+After setup completes, verify the connection using the venv's python:
+
+```bash
+"${CLAUDE_PLUGIN_ROOT}/python/.venv/bin/python" "${CLAUDE_PLUGIN_ROOT}/python/scripts/check_connection.py"
 ```
 
 ## API Key
@@ -45,7 +81,7 @@ conn = videodb.connect()
 coll = conn.get_collection()
 ```
 
-If `VIDEO_DB_API_KEY` is not set and no key is passed to `videodb.connect()`, ask the user for it.
+The API key is automatically loaded from `~/.videodb/.env` or local `.env` file.
 
 ## Quick Reference
 

@@ -56,24 +56,7 @@ git clone https://github.com/video-db/skills.git
 
 ## Quick Start
 
-### 1. Get your VideoDB API key
-
-Sign up free at [console.videodb.io](https://console.videodb.io) (50 free uploads, no credit card required). Copy your API key from the dashboard.
-
-### 2. Add your API key
-
-Create a central config directory and add your API key:
-
-```bash
-mkdir -p ~/.videodb
-echo "VIDEO_DB_API_KEY={YOUR_API_KEY_HERE}" > ~/.videodb/.env
-```
-
-Replace `{YOUR_API_KEY_HERE}` with your actual VideoDB API key (e.g., `vdb_xxxxx...`).
-
-> **Note:** This central location (`~/.videodb/.env`) works for both plugin installations and manual clones. You can also set the `VIDEO_DB_API_KEY` environment variable in your shell profile, or create a local `.env` file in the skill directory.
-
-### 3. Set up the Python environment
+### 1. Set up the environment
 
 In Claude Code, run:
 
@@ -81,19 +64,14 @@ In Claude Code, run:
 /videodb setup the virtual environment
 ```
 
-This creates the virtual environment and installs all dependencies.
+Claude will:
+- Prompt you for your VideoDB API key if not already configured
+- Create the virtual environment and install dependencies
+- Verify the connection to VideoDB
 
-### 4. Verify the connection
+> **Get your API key:** Sign up free at [console.videodb.io](https://console.videodb.io) (50 free uploads, no credit card required)
 
-In Claude Code, run:
-
-```
-/videodb check the connection to VideoDB
-```
-
-This confirms your API key is valid and the SDK can connect to VideoDB.
-
-### 5. Start using it
+### 2. Start using it
 
 ```
 /videodb upload https://www.youtube.com/watch?v=VIDEO_ID and give me a transcript
