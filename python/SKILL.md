@@ -54,18 +54,33 @@ echo "VIDEO_DB_API_KEY=<user-provided-key>" > ~/.videodb/.env
 
 ### 4. Run Setup Script
 
-Finally, run the virtual environment setup:
+Run the virtual environment setup. The script path differs based on installation method:
 
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT}/python/scripts/setup_venv.py"
+# Detect installation type and use python3 (python may not be in PATH on newer systems)
+if [ -d "${CLAUDE_PLUGIN_ROOT}/python" ]; then
+  # Claude Code plugin installation (files in python/ subdirectory)
+  python3 "${CLAUDE_PLUGIN_ROOT}/python/scripts/setup_venv.py"
+else
+  # npx skills installation (files in skill root)
+  python3 "${CLAUDE_PLUGIN_ROOT}/scripts/setup_venv.py"
+fi
 ```
+
+**Important:** Always use `python3` (not `python`) as `python` may not be available in PATH on newer macOS/Linux systems.
 
 ### 5. Verify Connection
 
 After setup completes, verify the connection using the venv's python:
 
 ```bash
-"${CLAUDE_PLUGIN_ROOT}/python/.venv/bin/python" "${CLAUDE_PLUGIN_ROOT}/python/scripts/check_connection.py"
+if [ -d "${CLAUDE_PLUGIN_ROOT}/python" ]; then
+  # Claude Code plugin installation
+  "${CLAUDE_PLUGIN_ROOT}/python/.venv/bin/python" "${CLAUDE_PLUGIN_ROOT}/python/scripts/check_connection.py"
+else
+  # npx skills installation
+  "${CLAUDE_PLUGIN_ROOT}/.venv/bin/python" "${CLAUDE_PLUGIN_ROOT}/scripts/check_connection.py"
+fi
 ```
 
 ## API Key
