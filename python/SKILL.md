@@ -30,8 +30,15 @@ When the user asks to "setup the virtual environment" or similar, follow this wo
 ### 1. Check for API Key
 
 First, check if the API key already exists:
+
+**For macOS/Linux:**
 ```bash
 test -f ~/.videodb/.env && grep -q VIDEO_DB_API_KEY ~/.videodb/.env
+```
+
+**For Windows (PowerShell):**
+```powershell
+Test-Path "$HOME\.videodb\.env" -and (Select-String -Path "$HOME\.videodb\.env" -Pattern "VIDEO_DB_API_KEY" -Quiet)
 ```
 
 ### 2. Prompt for API Key (if needed)
@@ -47,17 +54,25 @@ Description: "Get your free API key from https://console.videodb.io (50 free upl
 
 Once you have the API key, create the config directory and store it:
 
+**For macOS/Linux:**
 ```bash
 mkdir -p ~/.videodb
 echo "VIDEO_DB_API_KEY=<user-provided-key>" > ~/.videodb/.env
 ```
 
+**For Windows (PowerShell):**
+```powershell
+New-Item -Path "$HOME\.videodb" -ItemType Directory -Force
+Set-Content -Path "$HOME\.videodb\.env" -Value "VIDEO_DB_API_KEY=<user-provided-key>"
+```
+
 ### 4. Run Setup Script
 
-Run the virtual environment setup. The script path differs based on installation method:
+Run the virtual environment setup. The script path differs based on installation method.
 
+**For macOS/Linux:**
 ```bash
-# Detect installation type and use python3 (python may not be in PATH on newer systems)
+# Auto-detect installation type
 if [ -d "${CLAUDE_PLUGIN_ROOT}/python" ]; then
   # Claude Code plugin installation (files in python/ subdirectory)
   python3 "${CLAUDE_PLUGIN_ROOT}/python/scripts/setup_venv.py"
@@ -67,20 +82,44 @@ else
 fi
 ```
 
-**Important:** Always use `python3` (not `python`) as `python` may not be available in PATH on newer macOS/Linux systems.
+**For Windows (PowerShell):**
+```powershell
+# Auto-detect installation type
+if (Test-Path "$env:CLAUDE_PLUGIN_ROOT\python") {
+  # Claude Code plugin installation
+  python "$env:CLAUDE_PLUGIN_ROOT\python\scripts\setup_venv.py"
+} else {
+  # npx skills installation
+  python "$env:CLAUDE_PLUGIN_ROOT\scripts\setup_venv.py"
+}
+```
+
+**Note:** Use `python3` on macOS/Linux, and `python` on Windows. The Python scripts handle cross-platform paths automatically.
 
 ### 5. Verify Connection
 
 After setup completes, verify the connection using the venv's python:
 
+**For macOS/Linux:**
 ```bash
 if [ -d "${CLAUDE_PLUGIN_ROOT}/python" ]; then
-  # Claude Code plugin installation
+  # Plugin installation
   "${CLAUDE_PLUGIN_ROOT}/python/.venv/bin/python" "${CLAUDE_PLUGIN_ROOT}/python/scripts/check_connection.py"
 else
-  # npx skills installation
+  # npx installation
   "${CLAUDE_PLUGIN_ROOT}/.venv/bin/python" "${CLAUDE_PLUGIN_ROOT}/scripts/check_connection.py"
 fi
+```
+
+**For Windows (PowerShell):**
+```powershell
+if (Test-Path "$env:CLAUDE_PLUGIN_ROOT\python") {
+  # Plugin installation
+  & "$env:CLAUDE_PLUGIN_ROOT\python\.venv\Scripts\python.exe" "$env:CLAUDE_PLUGIN_ROOT\python\scripts\check_connection.py"
+} else {
+  # npx installation
+  & "$env:CLAUDE_PLUGIN_ROOT\.venv\Scripts\python.exe" "$env:CLAUDE_PLUGIN_ROOT\scripts\check_connection.py"
+}
 ```
 
 ## API Key
