@@ -261,8 +261,10 @@ An API key from https://console.videodb.io is required.
 ```python
 import videodb
 from dotenv import load_dotenv
+from pathlib import Path
 
-load_dotenv()
+# Load API key from ~/.videodb/.env
+load_dotenv(Path.home() / ".videodb" / ".env")
 conn = videodb.connect()
 coll = conn.get_collection()
 ```

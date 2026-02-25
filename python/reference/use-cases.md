@@ -215,9 +215,11 @@ import threading
 from flask import Flask, request, jsonify
 from pycloudflared import try_cloudflare
 from dotenv import load_dotenv
+from pathlib import Path
 import videodb
 
-load_dotenv()
+# Load API key from ~/.videodb/.env
+load_dotenv(Path.home() / ".videodb" / ".env")
 
 app = Flask(__name__)
 conn = videodb.connect()
