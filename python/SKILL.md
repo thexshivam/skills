@@ -1,6 +1,46 @@
 ---
 name: videodb
-description: Process videos with the VideoDB Python SDK. Handles trimming, combining clips, audio overlays, background music, subtitles, transcription, voiceover, text/image overlays, transcoding, resolution change, aspect-ratio fix, resizing for social platforms, media generation, search, and real-time capture — all server-side with no ffmpeg or local encoding tools needed.
+description: |
+  What you get
+    A single API-first video stack for agents.
+    Ingest anything, process server-side, and ship playable streams without FFmpeg glue.
+
+  • Core capabilities
+
+    Ingest + Transcode
+    - Accept any format
+    - Change codec, bitrate, FPS, resolution
+    - Output a playable stream for your app (CDN + hosting)
+
+    Scene-level Search Engine
+    - Build a searchable index of your media, scene by scene
+    - Find exact moments and auto-create clips
+    - "Indexes as code": describe what you need, programmatically
+    - Manage 1000s of hours of footage cleanly
+
+    Generate + Compose
+    - Generate assets: image, audio, video, text
+    - Overlay text/images, branding, motion captions
+    - Dub videos, translate captions, add animations
+
+    Real-time RTSP
+    - Connect live streams and create understanding in real time
+    - Define events and set up alerts
+    - Ideal for security cams and monitoring workflows
+
+    Desktop Perception
+    - Capture screen, mic, and system audio for real-time context
+    - Stream your desktop live
+    - Define alerts and triggers from what's happening on screen
+    - Store episodic memory and semantic-search sessions
+    - Record local sessions for QA and review
+
+  • Try it now
+    "Ingest this file and give me a playable web stream link"
+    "Generate subtitles, burn them in, and add light background music"
+    "Index this folder and find every scene with people"
+    "Connect this RTSP URL and alert when a person enters the zone"
+    "start recording and give me a actionable summary when it ends"
 allowed-tools: Read Grep Glob Bash(python:*)
 argument-hint: "[task description]"
 ---
@@ -33,7 +73,13 @@ Use the Read tool to read `~/.videodb/.env`.
 
 **File format** (enforced for both read and write): `KEY=value`, one per line, no quotes around the value, no spaces around `=`, no `export` prefix. Lines starting with `#` are comments. To read: split on the first `=` — left side is the key, right side is the value.
 
-If the file doesn't exist or `VIDEO_DB_API_KEY` is not present, ask the user for their key (free at https://console.videodb.io — 50 free uploads, no credit card). Then store it:
+If the file doesn't exist or `VIDEO_DB_API_KEY` is not present, give the user two options:
+1. Paste the key here — the agent writes it to `~/.videodb/.env`
+2. Add it manually to `~/.videodb/.env` as `VIDEO_DB_API_KEY=your-key`
+
+Get a free key at https://console.videodb.io — 50 free uploads, no credit card.
+
+To store the key:
 
 ```bash
 mkdir -p ~/.videodb
@@ -58,19 +104,12 @@ Then install:
 python -m pip install "videodb[capture]" || python3 -m pip install "videodb[capture]"
 ```
 
-### 3. Export API Key
-
-Read the API key from `~/.videodb/.env` (step 1) and export it once for the session:
-
-```bash
-export VIDEO_DB_API_KEY=<key>
-```
-
-All subsequent Python commands in this session will pick it up automatically. No need to prefix every command.
-
-### 4. Verify
+### 3. Verify
 
 ```python
+from videodb_env import init
+init()
+
 import videodb
 
 conn = videodb.connect()
@@ -80,17 +119,11 @@ print(f"Connected. Collection: {coll.id}, Videos: {len(coll.get_videos())}")
 
 ## Running Python code
 
-An API key from https://console.videodb.io is required. Stored at `~/.videodb/.env`.
-
-Before running any VideoDB code, read the API key from `~/.videodb/.env` using the Read tool and `export` it once:
-
-```bash
-export VIDEO_DB_API_KEY=<key>
-```
-
-Then run code inline with `python -c`. Do NOT write a script file when a short inline command works. Use whichever Python command is available (`python` or `python3`).
+`scripts/videodb_env.py` handles environment loading and SDK validation. Call `from videodb_env import init; init()` before any VideoDB code. It checks for the SDK, loads `VIDEO_DB_API_KEY` from the environment or `.env` files (`./.env`, `~/.videodb/.env`), and exits with clear error messages if anything is missing. All scripts in `scripts/` already call this at the top.
 
 `videodb.connect()` reads `VIDEO_DB_API_KEY` from the environment automatically.
+
+Do NOT write a script file when a short inline command works. Use whichever Python command is available (`python` or `python3`).
 
 ## Quick Reference
 
@@ -275,19 +308,72 @@ Reference documentation is in the `reference/` directory adjacent to this SKILL.
 - [reference/search.md](reference/search.md) - In-depth guide to video search (spoken word and scene-based)
 - [reference/editor.md](reference/editor.md) - Timeline editing, assets, and composition
 - [reference/generative.md](reference/generative.md) - AI-powered media generation (images, video, audio)
-- [reference/meetings.md](reference/meetings.md) - Meeting recording and transcription
 - [reference/rtstream.md](reference/rtstream.md) - Real-time streaming capabilities
 - [reference/capture.md](reference/capture.md) - Screen and audio capture
 - [reference/use-cases.md](reference/use-cases.md) - Common video processing patterns and examples
+
+## Screen Recording (Desktop Capture)
+
+Use `scripts/capture_bg.py` for screen and audio recording with AI transcription and visual indexing.
+
+**IMPORTANT:** Use `/usr/bin/python3` (system Python) instead of conda/anaconda Python, as the capture module requires Python 3.9+.
+
+### Start Recording
+
+Run in background mode:
+
+```bash
+export VIDEO_DB_API_KEY=<key>
+/usr/bin/python3 scripts/capture_bg.py start &
+```
+
+The recording will capture:
+- Screen video
+- Microphone audio
+- System audio
+- Real-time AI transcription
+- Visual scene descriptions
+
+### Check Status
+
+```bash
+cat /tmp/videodb_capture_state.json
+```
+
+### Stop Recording
+
+Create the stop file to signal recording to finish:
+
+```bash
+touch /tmp/videodb_capture_stop
+```
+
+Or run:
+
+```bash
+/usr/bin/python3 scripts/capture_bg.py stop
+```
+
+### Get Shareable Link
+
+After stopping, the state file contains the video URL:
+
+```bash
+cat /tmp/videodb_capture_state.json
+```
+
+Returns JSON with `player_url` for sharing.
 
 ## Utility scripts
 
 Ready-to-run scripts are in the `scripts/` directory adjacent to this SKILL.md file. Read and execute them directly instead of rewriting the logic.
 
+- [scripts/videodb_env.py](scripts/videodb_env.py) - Environment loading and SDK validation (called by all scripts)
+- [scripts/capture_bg.py](scripts/capture_bg.py) - **Screen recording with AI** (recommended for capture)
+- [scripts/capture.py](scripts/capture.py) - Interactive screen capture (requires terminal input)
 - [scripts/batch_upload.py](scripts/batch_upload.py) - Bulk upload from a URL list or directory
 - [scripts/search_and_compile.py](scripts/search_and_compile.py) - Search inside a video and compile matching clips into a stream
 - [scripts/extract_clips.py](scripts/extract_clips.py) - Extract clips by timestamp ranges
-- [scripts/backend.py](scripts/backend.py) - Capture backend (Flask + Cloudflare tunnel)
-- [scripts/client.py](scripts/client.py) - Capture client (screen + audio recording)
+- [scripts/backend.py](scripts/backend.py) - Capture backend server (WebSocket polling, no tunnel required)
+- [scripts/client.py](scripts/client.py) - Capture client (connects to backend)
 - [scripts/check_connection.py](scripts/check_connection.py) - Verify API key and connection
-- [scripts/env_loader.py](scripts/env_loader.py) - Load API key from `~/.videodb/.env` or local `.env`
