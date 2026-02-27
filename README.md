@@ -1,4 +1,5 @@
 [![GitHub stars](https://img.shields.io/github/stars/video-db/skills.svg?style=for-the-badge)](https://github.com/video-db/skills/stargazers)
+[![Issues](https://img.shields.io/github/issues/video-db/videodb-python.svg?style=for-the-badge)](https://github.com/video-db/videodb-python/issues)
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Fvideodb.io%2F&style=for-the-badge&label=videodb.io)](https://videodb.io)
 
 <div align="center">
@@ -16,38 +17,19 @@ Works with **Claude Code**, **Cursor**, **Copilot**, and other AI agents
 
 ---
 
-## Prerequisites
+## What it does
 
-- **Python 3.9+**
-- **An AI coding agent** (Claude Code, Cursor, Copilot, etc.)
-- **VideoDB API key** — sign up free at [console.videodb.io](https://console.videodb.io)
-  - $20 free credits
-  - No credit card required
+VideoDB Skills lets your AI coding agent run end-to-end video workflows.
 
-**Supported Platforms:** macOS, Linux, Windows (PowerShell)
-
----
-
-## Installation
-
-### Option 1: npx (Recommended)
-
-Install for multiple AI coding assistants (Claude Code, Cursor, Copilot, etc.):
-
-```bash
-npx skills add video-db/skills
-```
-
-### Option 2: Claude Code Plugin
-
-```bash
-/plugin marketplace add video-db/skills
-/plugin install videodb@videodb-skills
-```
+- Upload and process videos from YouTube, URLs, and local files
+- Search spoken words and visual scenes
+- Generate transcripts, subtitles, and AI media
+- Edit clips, overlays, and exports server-side
+- Capture visual and audio streams for real-time processing
 
 ---
 
-## Quick Start
+## Start building
 
 Get started in two steps. Open your AI coding agent (Claude Code, Cursor, Copilot) and follow along.
 
@@ -59,11 +41,11 @@ Get started in two steps. Open your AI coding agent (Claude Code, Cursor, Copilo
 
 The agent will prompt for your [VideoDB API key](https://console.videodb.io) ($20 free credits, no credit card required), install the SDK, and verify the connection.
 
-> **Cursor, Copilot, and other agents:** just ask your agent to "setup videodb".
+> **Cursor, Copilot, and other agents:** ask your agent to "setup videodb".
 
-### Step 2: Start building
+### Step 2: Give your agent instructions
 
-Describe what you want in natural language. The skill loads automatically.
+Ask your agent to run instructions like these. The skill loads automatically.
 
 - *"Upload https://www.youtube.com/watch?v=FgrO9ADPZSA and give me a transcript"*
 - *"Search for 'product demo' in my latest video"*
@@ -74,7 +56,7 @@ Describe what you want in natural language. The skill loads automatically.
 
 ---
 
-## Capabilities
+## Capability
 
 | Capability | Description |
 |---|---|
@@ -84,10 +66,38 @@ Describe what you want in natural language. The skill loads automatically.
 | **Edit** | Combine clips, trim, add text/image/audio overlays |
 | **Subtitles** | Auto-generate and style subtitles |
 | **AI Generate** | Create images, video, music, sound effects, and voiceovers from text |
-| **Meetings** | Record meetings, extract transcripts, get summaries and action items |
-| **Capture** | Record screen, mic, and system audio in real-time with AI transcription and indexing |
+| **Capture** | Capture visual and audio to unlock real-time processing |
 | **Transcode / Reframe** | Change resolution, quality, aspect ratio, or reframe for social platforms — all server-side |
 | **Stream** | Get playable HLS links for anything you build |
+
+---
+
+## Installation steps
+
+1. Ensure prerequisites:
+   - **Python 3.9+**
+   - **An AI coding agent** (Claude Code, Cursor, Copilot, etc.)
+   - **VideoDB API key** from [console.videodb.io](https://console.videodb.io)
+2. Install the skill (recommended):
+
+```bash
+npx skills add video-db/skills
+```
+
+3. Or install with Claude Code plugin:
+
+```bash
+/plugin marketplace add video-db/skills
+/plugin install videodb@videodb-skills
+```
+
+4. Run setup inside your agent:
+
+```
+/videodb setup
+```
+
+**Supported Platforms:** macOS, Linux, Windows (PowerShell)
 
 ---
 
