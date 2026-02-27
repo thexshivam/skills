@@ -48,12 +48,12 @@ conn = videodb.connect()
 
 `videodb.connect()` reads `VIDEO_DB_API_KEY` from the environment automatically.
 
-Do NOT write a script file when a short inline command works. Use whichever Python command is available (`python` or `python3`).
+Do NOT write a script file when a short inline command works.
 
 When writing inline Python (`python -c "..."`), always use properly formatted code — use semicolons to separate statements and keep it readable. For anything longer than ~3 statements, use a heredoc instead:
 
 ```bash
-python3 << 'EOF'
+python << 'EOF'
 from scripts.videodb_env import load_vdb_env
 load_vdb_env()
 
@@ -85,7 +85,7 @@ pip install videodb python-dotenv
 Run `load_vdb_env()` to verify the SDK and API key:
 
 ```bash
-python -c "from scripts.videodb_env import load_vdb_env; load_vdb_env(); print('OK')" || python3 -c "from scripts.videodb_env import load_vdb_env; load_vdb_env(); print('OK')"
+python -c "from scripts.videodb_env import load_vdb_env; load_vdb_env(); print('OK')"
 ```
 
 If it prints `OK`, setup is done.
@@ -291,15 +291,12 @@ Reference documentation is in the `reference/` directory adjacent to this SKILL.
 
 Use `scripts/capture_bg.py` for screen and audio recording with AI transcription and visual indexing.
 
-**IMPORTANT:** Use `/usr/bin/python3` (system Python) instead of conda/anaconda Python, as the capture module requires Python 3.9+.
-
 ### Start Recording
 
 Run in background mode:
 
 ```bash
-export VIDEO_DB_API_KEY=<key>
-/usr/bin/python3 scripts/capture_bg.py start &
+python scripts/capture_bg.py start &
 ```
 
 The recording will capture:
@@ -326,7 +323,7 @@ touch /tmp/videodb_capture_stop
 Or run:
 
 ```bash
-/usr/bin/python3 scripts/capture_bg.py stop
+python scripts/capture_bg.py stop
 ```
 
 ### Get Shareable Link

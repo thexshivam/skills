@@ -4,8 +4,6 @@
 
 VideoDB Capture enables real-time screen and audio recording with AI processing.
 
-**IMPORTANT:** Use `/usr/bin/python3` (system Python 3.9+) instead of conda/anaconda Python for capture.
-
 ## Quick Start (Recommended)
 
 ### Background Recording with `capture_bg.py`
@@ -14,8 +12,7 @@ Best for CLI/agent use — runs in background with file-based stop control:
 
 **Start recording:**
 ```bash
-export VIDEO_DB_API_KEY=<key>
-/usr/bin/python3 scripts/capture_bg.py start &
+python scripts/capture_bg.py start &
 ```
 
 **Check status:**
