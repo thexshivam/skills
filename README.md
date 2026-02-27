@@ -6,11 +6,9 @@
 <img width="1856" height="576" alt="github_banner_skills" src="https://github.com/user-attachments/assets/a99b59d1-62de-43be-afcd-af5347372db6" width="800"/>
 
 
-**The only skill your agent needs for video.**
+**The only video skill your agent needs.**
 
 Works with **Claude Code**, **Cursor**, **Copilot**, and other AI agents
-
----
 
 **[📚 Explore the Docs](https://docs.videodb.io)**
 
