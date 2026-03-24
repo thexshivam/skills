@@ -323,7 +323,7 @@ Use `ws_listener.py` to capture WebSocket events during recording sessions. Desk
 
 ### Quick Start
 
-1. **Start listener**: `python scripts/ws_listener.py &`
+1. **Start listener**: `python scripts/ws_listener.py --cwd=<PROJECT_ROOT> &`
 2. **Get WebSocket ID**: `cat /tmp/videodb_ws_id`
 3. **Run capture code** (see reference/capture.md for full workflow)
 4. **Events written to**: `/tmp/videodb_events.jsonl`
